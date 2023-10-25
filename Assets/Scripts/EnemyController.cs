@@ -31,21 +31,13 @@ public class EnemyController : MonoBehaviour
     private void Update()
     {
         _chargingSource = null;
-        ChaseTransform(lastSeenPosition);
-        if (CanSeePlayer() && LightManager.Instance.IlluminatedByAnyLight(player.transform.position, out _))
+        if (CanSeePlayer() && LightManager.Instance.IlluminatedByAnyLight(player.position, out _))
         {
-            ChaseTransform(player);
             lastSeenPosition.position = player.position;
         }
-        
-        if (LightManager.Instance.IlluminatedByAnyLight(transform.position, out _chargingSource, 1, _glow))
-        {
-            if (IsCloseToPlayer(1))
-            {
-                // Enemy is blinded
-                //Stop();
-            }
-        }
+        ChaseTransform(lastSeenPosition);
+
+        LightManager.Instance.IlluminatedByAnyLight(transform.position, out _chargingSource, 1, _glow);
 
         if (_chargingSource != null)
         {
@@ -89,12 +81,9 @@ public class EnemyController : MonoBehaviour
 
     bool CanSeePlayer()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, (player.position - transform.position).normalized, sightRange);
-        if (hit.collider != null && hit.collider.CompareTag("Player"))
-        {
-            return true;
-        }
-        return false;
+        var l2pos = transform.position - player.position;
+        RaycastHit2D hit = Physics2D.Raycast(player.position, l2pos.normalized, l2pos.magnitude, LayerMask.GetMask("Obstacle"));
+        return hit.collider == null;
     }
 
     bool IsCloseToPlayer(float distance)

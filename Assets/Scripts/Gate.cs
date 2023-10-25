@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
 public class Gate : MonoBehaviour
 {
+    public List<Sensor> sensors;
     public Transform gate1, gate2, center;
     public float openTime, openDistance;
     public bool opened;
@@ -16,9 +18,28 @@ public class Gate : MonoBehaviour
         _startPos2 = gate2.position;
     }
 
-    public void Open()
+    private void Update()
     {
-        if (opened) return;
+        bool allOn = true;
+        foreach (Sensor sensor in sensors)
+        {
+            allOn &= sensor.isOn;
+        }
+
+        if (allOn)
+        {
+            if (!opened)
+                Open();
+        }
+        else
+        {
+            if (opened)
+                Close();
+        }
+    }
+
+    private void Open()
+    {
         Vector3 dir1 = Vector3.Normalize(gate1.position - center.position);
         Vector3 dir2 = Vector3.Normalize(gate2.position - center.position);
         gate1.transform.DOMove(gate1.position + dir1 * openDistance, openTime);
@@ -26,9 +47,8 @@ public class Gate : MonoBehaviour
         opened = true;
     }
 
-    public void Close()
+    private void Close()
     {
-        if (!opened) return;
         gate1.transform.DOMove(_startPos1, openTime);
         gate2.transform.DOMove(_startPos2, openTime);
         opened = false;

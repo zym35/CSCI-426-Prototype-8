@@ -52,28 +52,31 @@ public class LightManager : MonoBehaviour
             {
                 continue;
             }
-            bool notBlock = false;
-            bool inAngle = false;
-            bool inRange = false;
+            
 
             var l2pos = position - l.transform.position;
-            RaycastHit2D hit = Physics2D.Raycast(l.transform.position, l2pos.normalized, l2pos.magnitude, 1 << LayerMask.NameToLayer("Obstacle"));
-            if (hit.collider == null)
+            RaycastHit2D hit = Physics2D.Raycast(l.transform.position, l2pos.normalized, l2pos.magnitude, LayerMask.GetMask("Obstacle"));
+            if (hit.collider != null)
             {
-                notBlock = true;
+                continue;
             }
 
             Vector3 lightDirection = l.transform.up;
             float dotProduct = Vector3.Dot(l2pos.normalized, lightDirection);
-            inAngle = Mathf.Acos(dotProduct) < Mathf.Deg2Rad * l.pointLightInnerAngle;
-
-            inRange = l2pos.magnitude < l.pointLightOuterRadius * rangePercent;
-
-            if (notBlock && inAngle && inRange)
+            bool inAngle = Mathf.Acos(dotProduct) < Mathf.Deg2Rad * l.pointLightInnerAngle;
+            if (!inAngle)
             {
-                closest = l.transform;
-                return true;
+                continue;
             }
+
+            bool inRange = l2pos.magnitude < l.pointLightOuterRadius * rangePercent;
+            if (!inRange)
+            {
+                continue;
+            }
+
+            closest = l.transform;
+            return true;
         }
 
         closest = null;

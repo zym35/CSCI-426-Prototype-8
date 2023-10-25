@@ -7,12 +7,11 @@ public class Sensor : MonoBehaviour
     public float blinkInterval = 1f;
     public Color defaultColor;
     public Color illuminatedColor = Color.green;
-    public Gate gate;
     public float holdTime = 3;
     public LineRenderer line;
+    public bool isOn;
 
     private SpriteRenderer spriteRenderer;
-    private bool _isOn;
     private float _onCounter;
 
     private void Start()
@@ -25,40 +24,37 @@ public class Sensor : MonoBehaviour
     {
         if (LightManager.Instance.IlluminatedByAnyLight(transform.position, out _))
         {
-            if (!_isOn)
+            if (!isOn)
             {
-                _isOn = true;
+                isOn = true;
             
                 spriteRenderer.color = illuminatedColor;
                 spriteRenderer.enabled = true;
-            
-                gate.Open();
             }
             
             _onCounter = holdTime;
         }
 
-        if (_isOn)
+        if (isOn)
         {
             _onCounter -= Time.deltaTime;
             if (_onCounter < 0)
             {
-                _isOn = false;
+                isOn = false;
                 spriteRenderer.color = defaultColor;
                 spriteRenderer.enabled = true;
-                gate.Close();
             }
         }
 
-        line.startColor = _isOn ? illuminatedColor : defaultColor;
-        line.endColor = _isOn ? illuminatedColor : defaultColor;
+        line.startColor = isOn ? illuminatedColor : defaultColor;
+        line.endColor = isOn ? illuminatedColor : defaultColor;
     }
 
     private IEnumerator Blink()
     {
         while (true)
         {
-            if (!_isOn)
+            if (!isOn)
             {
                 yield return new WaitForSeconds(blinkInterval);
                 spriteRenderer.enabled = !spriteRenderer.enabled;

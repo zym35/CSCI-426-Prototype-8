@@ -58,7 +58,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag("Respawn"))
         {
-            respawn = other.transform.position;
+            respawn = other.transform.GetChild(0).position;
         }
     }
 }

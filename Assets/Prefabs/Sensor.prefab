@@ -322,6 +322,6 @@ MonoBehaviour:
   blinkInterval: 0.5
   defaultColor: {r: 1, g: 0.49803925, b: 0, a: 1}
   illuminatedColor: {r: 0, g: 1, b: 0, a: 1}
-  gate: {fileID: 0}
-  holdTime: 3
+  holdTime: 2.5
   line: {fileID: 4973993917255215976}
+  isOn: 0
