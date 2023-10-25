@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using TorcheyeUtility;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -53,6 +54,16 @@ public class PlayerController : MonoBehaviour
         if (other.collider.CompareTag("Enemy"))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+    }
+
+    public GameObject globalLight, finalCam;
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Finish"))
+        {
+            globalLight.SetActive(true);
+            finalCam.SetActive(true);
         }
     }
 }
