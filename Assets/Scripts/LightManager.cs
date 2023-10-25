@@ -44,10 +44,14 @@ public class LightManager : MonoBehaviour
         return notBlock && inAngle && inRange;
     }
     
-    public bool IlluminatedByAnyLight(Vector3 position, float rangePercent = 1)
+    public bool IlluminatedByAnyLight(Vector3 position, out Transform closest, float rangePercent = 1, Light2D exclude = null)
     {
         foreach (Light2D l in lights)
         {
+            if (exclude != null && l == exclude)
+            {
+                continue;
+            }
             bool notBlock = false;
             bool inAngle = false;
             bool inRange = false;
@@ -66,9 +70,13 @@ public class LightManager : MonoBehaviour
             inRange = l2pos.magnitude < l.pointLightOuterRadius * rangePercent;
 
             if (notBlock && inAngle && inRange)
+            {
+                closest = l.transform;
                 return true;
+            }
         }
 
+        closest = null;
         return false;
     }
 }

@@ -23,7 +23,7 @@ public class Sensor : MonoBehaviour
 
     private void Update()
     {
-        if (LightManager.Instance.IlluminatedByAnyLight(transform.position))
+        if (LightManager.Instance.IlluminatedByAnyLight(transform.position, out _))
         {
             if (!_isOn)
             {

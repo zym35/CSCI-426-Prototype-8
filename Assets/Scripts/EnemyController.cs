@@ -19,7 +19,7 @@ public class EnemyController : MonoBehaviour
     
     private float _chargeAmount = 0f;
     private Light2D _glow;
-    private bool _isCharging;
+    private Transform _chargingSource;
 
     private void Start()
     {
@@ -30,27 +30,26 @@ public class EnemyController : MonoBehaviour
 
     private void Update()
     {
-        _isCharging = false;
+        _chargingSource = null;
         ChaseTransform(lastSeenPosition);
-        if (CanSeePlayer() && LightManager.Instance.IlluminatedByAnyLight(player.transform.position))
+        if (CanSeePlayer() && LightManager.Instance.IlluminatedByAnyLight(player.transform.position, out _))
         {
             ChaseTransform(player);
             lastSeenPosition.position = player.position;
         }
         
-        if (LightManager.Instance.IlluminatedByPlayerLight(transform.position))
+        if (LightManager.Instance.IlluminatedByAnyLight(transform.position, out _chargingSource, 1, _glow))
         {
-            _isCharging = true;
             if (IsCloseToPlayer(1))
             {
                 // Enemy is blinded
-                Stop();
+                //Stop();
             }
         }
 
-        if (_isCharging)
+        if (_chargingSource != null)
         {
-            float factor = Time.deltaTime * (1f / Vector3.Distance(transform.position, player.position));
+            float factor = Time.deltaTime * (1f / Vector3.Distance(transform.position, _chargingSource.position));
             _chargeAmount += chargeRate * factor;
 
             if (_chargeAmount > explodeThreshold)
