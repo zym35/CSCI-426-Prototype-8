@@ -43,14 +43,14 @@ public class Gate : MonoBehaviour
         Vector3 dir1 = Vector3.Normalize(gate1.position - center.position);
         Vector3 dir2 = Vector3.Normalize(gate2.position - center.position);
         gate1.transform.DOMove(gate1.position + dir1 * openDistance, openTime);
-        gate2.transform.DOMove(gate2.position + dir2 * openDistance, openTime);
+        gate2.transform.DOMove(gate2.position + dir2 * openDistance, openTime).onComplete += delegate { AstarPath.active.Scan(); };
         opened = true;
     }
 
     private void Close()
     {
         gate1.transform.DOMove(_startPos1, openTime);
-        gate2.transform.DOMove(_startPos2, openTime);
+        gate2.transform.DOMove(_startPos2, openTime).onComplete += delegate { AstarPath.active.Scan(); };
         opened = false;
     }
 }
